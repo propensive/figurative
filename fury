@@ -1,0 +1,12 @@
+repo propensive/probably
+
+target figurative/test
+
+project figurative
+  module core
+    sources src/core
+
+  module test
+    sources  src/test
+    include  figurative/core probably/cli
+    main     figurative.Tests

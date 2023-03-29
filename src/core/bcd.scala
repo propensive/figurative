@@ -17,8 +17,33 @@ object FigurativeOpaques:
         cur /= 10
 
       bcd
+    
+    def apply(str: String): Decimal =
+      var acc: Long = 0L
+      var idx: Int = 0
+      val len = str.length
+      
+      while idx < len do
+        acc <<= 4
+        acc |= str.charAt(idx) - 48
+        idx += 1
+      
+      acc
 
   extension (left: Decimal)
+    def string: String =
+      var idx = 16 - (java.lang.Long.numberOfLeadingZeros(left)/4)
+      var current: Long = left
+      if left == 0 then "0" else
+        val array = new Array[Char](idx)
+        
+        while idx > 0 do
+          idx -= 1
+          array(idx) = ((current & 15) + 48).toChar
+          current >>= 4
+        
+        String(array)
+
     def long: Long =
       var total: Long = 0
       var cur: Long = left
@@ -30,16 +55,18 @@ object FigurativeOpaques:
         cur >>= 4
       
       total
+
+    def +(right: Decimal): Decimal =
+      val sum = left + right + 0x0666666666666666L
+      val overflow = ~(sum ^ left ^ right) & 0x1111111111111111L
+      sum - ((overflow >> 2) | (overflow >> 3))
     
-    def plus(right: Decimal): Decimal =
-      println("left = "+left.long)
-      println("right = "+right.long)
-      val sum: Long = left + right + 0x6666666666666666L
-      
-      println("rsum = "+(left + right))
-      println("sum = "+sum)
-      val carry: Long = ~(sum ^ left ^ right) & 0x1111111111111111L
-      println("carry = "+(sum ^ left ^ right))
-      sum - ((carry >> 2) | (carry >> 3)): Decimal
+    def -(right: Decimal): Decimal =
+      val diff: Long = left - right
+      val underflow: Long = ~(diff ^ left ^ right) & 0x1111111111111111L
+      diff - ((underflow >> 2) | (underflow >> 3))
 
 
+extension (long: Long) def bin: String =
+  val str = java.lang.Long.toBinaryString(long).nn
+  (("0"*(64 - str.length))+str).nn.grouped(4).mkString(" ")

@@ -16,9 +16,9 @@
 
 package figurative
 
-export FigurativeOpaques.Decimal
+export Figurative.Decimal
 
-object FigurativeOpaques:
+object Figurative:
   opaque type Decimal = Long
 
   object Decimal:

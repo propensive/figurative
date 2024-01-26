@@ -72,12 +72,12 @@ object Figurative:
       
       total
 
-    def +(right: Decimal): Decimal =
+    infix def + (right: Decimal): Decimal =
       val sum = left + right + 0x0666666666666666L
       val overflow = ~(sum ^ left ^ right) & 0x1111111111111111L
       sum - ((overflow >> 2) | (overflow >> 3))
     
-    def -(right: Decimal): Decimal =
+    infix def - (right: Decimal): Decimal =
       val diff: Long = left - right
       val underflow: Long = ~(diff ^ left ^ right) & 0x1111111111111111L
       diff - ((underflow >> 2) | (underflow >> 3))
